@@ -1,10 +1,17 @@
-import logo from "./logo.svg";
 import "./App.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
-function Dropdown(props) {
+type Option = { label: string; value: string };
+
+type DropdownProps = {
+  placeHolder: string;
+  onChange: (o: Option) => void;
+  options: Option[];
+};
+
+function Dropdown(props: DropdownProps) {
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState();
+  const [selected, setSelected] = useState<Option>();
 
   //  useEffect(() => {
   //    const listener = (e) => {
@@ -17,7 +24,7 @@ function Dropdown(props) {
   //    return () => document.removeEventListener(listener);
   //  }, []);
 
-  const handleClick = (option) => {
+  const handleClick = (option?: Option) => {
     setOpen((prev) => !prev);
 
     if (option) {
@@ -59,7 +66,7 @@ function App() {
     { label: "Foo", value: "1d" },
   ];
 
-  const onChange = (option) => {
+  const onChange = (option: Option) => {
     console.log("Parent", option);
   };
 
