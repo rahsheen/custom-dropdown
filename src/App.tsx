@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState } from "react";
+import { useRef, useState, useEffect, CSSProperties } from "react";
 
 type Option = { label: string; value: string };
 
@@ -7,26 +7,28 @@ type DropdownProps = {
   placeHolder: string;
   onChange: (o: Option) => void;
   options: Option[];
+  style: CSSProperties;
 };
 
 function Dropdown(props: DropdownProps) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Option>();
 
-  //  useEffect(() => {
-  //    const listener = (e) => {
-  //      setOpen((prev) => !prev);
-  //      console.log(e);
-  //    };
-  //
-  //    document.addEventListener("click", listener);
-  //
-  //    return () => document.removeEventListener(listener);
-  //  }, []);
+  const dropdownRef = useRef<HTMLInputElement>(null);
 
-  const handleClick = (option?: Option) => {
-    setOpen((prev) => !prev);
+  useEffect(() => {
+    const listener = (e: any) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
 
+    document.addEventListener("click", listener);
+
+    return () => document.removeEventListener("cliick", listener);
+  }, []);
+
+  const handleItemClick = (option: Option) => () => {
     if (option) {
       setSelected(option);
       props.onChange(option);
@@ -34,19 +36,19 @@ function Dropdown(props: DropdownProps) {
   };
 
   return (
-    <>
-      <button onClick={() => handleClick()}>
+    <div ref={dropdownRef} style={props.style}>
+      <button onClick={(_) => setOpen((p) => !p)}>
         {selected ? selected.label : props.placeHolder}
       </button>
       {open && (
         <ul>
           {props.options.map((option) => {
-            // if (selected?.value === option.value) return null;
+            console.log(option, selected);
 
             return (
               <li
                 key={option.label + option.value}
-                onClick={() => handleClick(option)}
+                onClick={handleItemClick(option)}
               >
                 {option.label}
               </li>
@@ -54,7 +56,8 @@ function Dropdown(props: DropdownProps) {
           })}
         </ul>
       )}
-    </>
+      <h1>Test Stuff</h1>
+    </div>
   );
 }
 
@@ -72,7 +75,12 @@ function App() {
 
   return (
     <div className="App">
-      <Dropdown options={options} onChange={onChange} placeHolder="Select" />
+      <Dropdown
+        options={options}
+        onChange={onChange}
+        placeHolder="Select"
+        style={{ width: "20%" }}
+      />
     </div>
   );
 }
