@@ -43,7 +43,7 @@ function Dropdown(props: DropdownProps) {
       {open && (
         <ul>
           {props.options.map((option) => {
-            console.log(option, selected);
+            if (selected?.label === option.label) return null;
 
             return (
               <li
@@ -56,7 +56,6 @@ function Dropdown(props: DropdownProps) {
           })}
         </ul>
       )}
-      <h1>Test Stuff</h1>
     </div>
   );
 }
